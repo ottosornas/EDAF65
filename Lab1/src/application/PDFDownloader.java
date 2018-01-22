@@ -16,13 +16,10 @@ import java.util.regex.Pattern;
 
 public class PDFDownloader {
 
-	private Pattern pattern;
-
 	/**
 	 * Creates the pattern used for matching strings with regex and reads/downloads page
 	 */
 	public PDFDownloader(String url) {
-		pattern = Pattern.compile("<a\\s*?.*?\\s*?href=\"(.*?\\.pdf)\"\\s*?.*?\\s*?>(.*?)</a>"); //denna är fel, men vet ej hur jag ska förbättra
 		readPage(url);
 	}
 
@@ -37,17 +34,29 @@ public class PDFDownloader {
 		BufferedReader bReader =
 		new BufferedReader(new InputStreamReader(is));
 		String line;
-		List<String> urls = new ArrayList<String>();
-		Matcher matcher;
+		List<URL> urls = new ArrayList<URL>();
+		
+		//Find all lines with html tags, then which of them have hrefs and then check if they are pdf
+        Pattern htmltag = Pattern.compile("<a\\b[^>]*href=\"[^>]*>(.*?)</a>");
+        Pattern link = Pattern.compile("href=\\\"[^>]*\\\">");
+        Pattern pdf = Pattern.compile("(.*)\\.pdf");
 			while ((line = bReader.readLine()) != null) {
-				matcher = pattern.matcher(line);
+				Matcher matcher = htmltag.matcher(line);
 				while(matcher.find()){
-					urls.add(matcher.group());
+					Matcher m = link.matcher(matcher.group());
+					while(m.find()){
+						Matcher mPDF = pdf.matcher(m.group());
+						if(mPDF.find()){
+							String pdfURL = mPDF.group(0).replaceAll("href=\"", "");
+							urls.add(new URL(pdfURL));
+						}
+					}
 				}
 			}
 		bReader.close();	
-		for(String s: urls){
-			download(myDoc, s);
+		for(URL u: urls){
+			System.out.println(u.toString());
+		//	download(u);
 		}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -62,13 +71,13 @@ public class PDFDownloader {
 	 * @param s the path to the pdf file
 	 * @throws IOException
 	 */
-	public void download(URL url, String s) throws IOException{
+	public void download(URL url) throws IOException{ //hela den här metoden är knas, vet inte hur jag ska fixa 
 		Path p = Paths.get(url.getPath());
 		String file = p.getFileName().toString();
 		System.out.println(file);
 		FileOutputStream fos = new FileOutputStream(new File(file));
-		byte[] contentInBytes = s.getBytes();	//är väldigt osäker på hur man borde göra här
-		fos.write(contentInBytes);
+		//byte[] contentInBytes = s.getBytes();
+		//fos.write(contentInBytes);
 		fos.flush();
 		fos.close();
 	}
