@@ -38,7 +38,7 @@ public class PDFDownloader {
 		
 		//Find all lines with html tags, then which of them have hrefs and then check if they are pdf
         Pattern htmltag = Pattern.compile("<a\\b[^>]*href=\"[^>]*>(.*?)</a>");
-        Pattern link = Pattern.compile("href=\\\"[^>]*\\\">");
+        Pattern link = Pattern.compile("href=\\\"[^\">]*\\\">");
         Pattern pdf = Pattern.compile("(.*)\\.pdf");
 			while ((line = bReader.readLine()) != null) {
 				Matcher matcher = htmltag.matcher(line);
@@ -56,7 +56,7 @@ public class PDFDownloader {
 		bReader.close();	
 		for(URL u: urls){
 			System.out.println(u.toString());
-		//	download(u);
+			download(u);
 		}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,13 +71,17 @@ public class PDFDownloader {
 	 * @param s the path to the pdf file
 	 * @throws IOException
 	 */
-	public void download(URL url) throws IOException{ //hela den här metoden är knas, vet inte hur jag ska fixa 
+	public void download(URL url) throws IOException{
 		Path p = Paths.get(url.getPath());
 		String file = p.getFileName().toString();
 		System.out.println(file);
+		InputStream in = url.openStream();
 		FileOutputStream fos = new FileOutputStream(new File(file));
-		//byte[] contentInBytes = s.getBytes();
-		//fos.write(contentInBytes);
+		int b;
+		while((b = in.read()) != -1) {
+			fos.write(b);
+		}
+		in.close();
 		fos.flush();
 		fos.close();
 	}
