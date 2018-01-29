@@ -40,16 +40,14 @@ public class RunnerThread extends Thread {
 			System.out.println(u.toString());
 		}
 		for (int i = 0; i < urls.size(); i++) {
-			for (int x = i; x < 5; x++) {
+			for (int x = i; x < i+5; x++) {
 				if (x < urls.size()) {
 					RunnerThread temp = new RunnerThread(urls.get(x).toString());
 					temp.start();
-					temp.interrupt();
 					System.out.println("Started Thread:" + x);
 				}
 			}
 			i = i + 5;
-			System.out.println("i= " + i);
 		}
 	}
 
