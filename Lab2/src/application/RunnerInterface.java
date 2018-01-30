@@ -16,36 +16,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RunnerInterface implements Runnable {
+	
+	public RunnerInterface(){
 
-	private String threadName;
-	
-	public RunnerInterface(String s){
-		threadName = s;
 	}
 	
-	public static void main(String[] args) {
-		RunnerThread rt = new RunnerThread("test");
-		List<URL> urls = rt.readPage("http://cs229.stanford.edu/syllabus.html");
-		for(URL u: urls){
-			System.out.println(u.toString());
-		}
-		for (int i = 0; i < urls.size(); i++) {
-			for (int x = i; x < i+5; x++) {
-				if (x < urls.size()) {
-					RunnerThread temp = new RunnerThread(urls.get(x).toString());
-					temp.start();
-					System.out.println("Started Thread:" + x);
-				}
-			}
-			i = i + 5;
-		}
-	}
 
 	@Override
 	public void run() {
 		try {
-			download(this.threadName);
-			return;
+			URL url = ThreadMain.getURL();
+			if(url != null){
+			download(url);
+			}
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -105,8 +89,8 @@ public class RunnerInterface implements Runnable {
 	 *            the path to the pdf file
 	 * @throws IOException
 	 */
-	public synchronized void download(String s) throws IOException {
-		URL url = new URL(s);
+	public synchronized void download(URL s) throws IOException {
+		URL url = s;
 		Path p = Paths.get(url.getPath());
 		String file = p.getFileName().toString();
 		System.out.println(file);

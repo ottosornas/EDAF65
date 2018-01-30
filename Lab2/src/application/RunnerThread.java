@@ -12,42 +12,25 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RunnerThread extends Thread {
 
-	public RunnerThread(String s) {
-		super(s);
+	public RunnerThread() {
+		
 	}
 
-	@Override
 	public void run() {
 		try {
-			download(this.getName());
-			return;
+			URL url = ThreadMain.getURL();
+			if(url != null){
+			download(url);
+			}
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-	}
-
-	public static void main(String[] args) {
-		RunnerThread rt = new RunnerThread("test");
-		List<URL> urls = rt.readPage("http://cs229.stanford.edu/syllabus.html");
-		for(URL u: urls){
-			System.out.println(u.toString());
-		}
-		for (int i = 0; i < urls.size(); i++) {
-			for (int x = i; x < i+5; x++) {
-				if (x < urls.size()) {
-					RunnerThread temp = new RunnerThread(urls.get(x).toString());
-					temp.start();
-					System.out.println("Started Thread:" + x);
-				}
-			}
-			i = i + 5;
 		}
 	}
 
@@ -104,8 +87,8 @@ public class RunnerThread extends Thread {
 	 *            the path to the pdf file
 	 * @throws IOException
 	 */
-	public synchronized void download(String s) throws IOException {
-		URL url = new URL(s);
+	public void download(URL s) throws IOException {
+		URL url = s;
 		Path p = Paths.get(url.getPath());
 		String file = p.getFileName().toString();
 		System.out.println(file);
