@@ -18,7 +18,7 @@ public class ThreadMain {
 		while(urls.iterator().hasNext()){
 		
 			//This code is for executing RunnerInterface
-			
+				
 		RunnerInterface thread1 = new RunnerInterface();
 		RunnerInterface thread2 = new RunnerInterface();
 		RunnerInterface thread3 = new RunnerInterface();
