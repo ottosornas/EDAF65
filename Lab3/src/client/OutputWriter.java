@@ -11,6 +11,10 @@ public class OutputWriter extends Thread {
 	Socket socket;
 	Scanner scan;
 
+	/**
+	 * Creates an object to write messages from the client
+	 * @param socket
+	 */
 	public OutputWriter(Socket socket) {
 		try {
 			this.socket = socket;
@@ -19,7 +23,10 @@ public class OutputWriter extends Thread {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Creates and sends the bytestream from the client
+	 */
 	public void run() {
 		scan = new Scanner(System.in);
 		while (!socket.isClosed()) {

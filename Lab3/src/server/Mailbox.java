@@ -11,17 +11,29 @@ public class Mailbox {
 	private Participants participants;
 	private ExecutorService es;
 
+	/**
+	 * Creates the mailbox containing all the messages
+	 */
+	
 	public Mailbox() {
 		messages = new ArrayList<Message>();
 		participants = new Participants();
 		es = Executors.newFixedThreadPool(10);
 	}
-
+	
+	/**
+	 * Adds a message to the list and notifies all threads listening
+	 * @param message
+	 */
 	public synchronized void addMsg(Message message) {
 		messages.add(message);
 		notifyAll();
 	}
 
+	/**
+	 * Fetches the first message in the list and acts diffrently depending on what type of message it is
+	 * @throws InterruptedException
+	 */
 	public synchronized void fetchMsg() throws InterruptedException {
 		if (messages.isEmpty()) {
 			wait();

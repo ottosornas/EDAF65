@@ -7,7 +7,11 @@ import java.net.Socket;
 public class ClientReader extends Thread {
 	private InputStream is;
 	private Socket socket;
-
+	
+	/**
+	 * Creates an object that reads the messages from the server
+	 * @param socket
+	 */
 	public ClientReader(Socket socket){
 	        this.socket=socket;
 	        try {

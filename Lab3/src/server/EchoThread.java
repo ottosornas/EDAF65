@@ -10,6 +10,11 @@ public class EchoThread extends Thread {
 	private OutputStream os;
 	private Socket socket;
 	
+	/**
+	 * This class send messages from the server to the clients
+	 * @param message
+	 * @param socket
+	 */
 	public EchoThread(String message, Socket socket) {
 		this.message = message;
 		this.socket = socket;

@@ -6,7 +6,10 @@ import java.util.ArrayList;
 public class Participants {
 
 	public static ArrayList<Socket> sockets;
-
+	
+	/**
+	 * Creates the list of the currently connected clients
+	 */
 	public Participants() {
 		sockets = new ArrayList<Socket>();
 	}

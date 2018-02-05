@@ -10,6 +10,11 @@ public class InputReader extends Thread {
 	private InputStream inStream;
 	private Mailbox mailbox;
 	
+	/**
+	 * Creates an inputreader which reads the client's output
+	 * @param socket
+	 * @param mailbox
+	 */
 	public InputReader(Socket socket, Mailbox mailbox) {
 		this.mailbox = mailbox;
 		this.socket = socket;
@@ -20,7 +25,10 @@ public class InputReader extends Thread {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Reads the output and adds it as a message to the mailbox
+	 */
 	public void run() {
 		
 		while (!socket.isClosed()) {

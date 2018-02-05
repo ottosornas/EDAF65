@@ -9,6 +9,10 @@ public class Client {
 	private int port;
 	private Socket socket;
 	
+	/**
+	 * Creates the client itself (den här är antagligen fel)
+	 * @param socket
+	 */
 	public Client(Socket socket){
 		this.socket = socket;
 		ip = socket.getInetAddress();
