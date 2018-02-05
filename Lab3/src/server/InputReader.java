@@ -3,17 +3,17 @@ package server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class InputReader extends Thread {
 
 	private Socket socket;
 	private InputStream inStream;
-
-	public InputReader(Socket socket) {
-
+	private Mailbox mailbox;
+	
+	public InputReader(Socket socket, Mailbox mailbox) {
+		this.mailbox = mailbox;
 		this.socket = socket;
-
+		
 		try {
 			inStream = socket.getInputStream();
 		} catch (IOException e) {
@@ -27,11 +27,13 @@ public class InputReader extends Thread {
 			try {
 				StringBuilder sb = new StringBuilder();
 				int ch = inStream.read();
-				while(ch!=13) { // https://stackoverflow.com/questions/309424/read-convert-an-inputstream-to-a-string
+				while(ch!=13) {
 					sb.append((char) ch);
 					ch = inStream.read();	
 				}
 				System.out.println("Message: " + sb.toString());
+				mailbox.addMsg(new Message(socket.getInetAddress().toString(), sb.toString()));
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

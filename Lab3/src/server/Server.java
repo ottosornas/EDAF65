@@ -13,6 +13,8 @@ public class Server {
 	private int port;
 	private boolean connected;
 	private ExecutorService es;
+	private Mailbox mailbox;
+	private Participants participants;
 
 	/**
 	 * Creates the server on the given port
@@ -20,10 +22,10 @@ public class Server {
 	 * @param port
 	 */
 	public Server(int port) {
-
 		es = Executors.newFixedThreadPool(10);
 		this.port = port;
-
+		mailbox = new Mailbox();
+		participants = new Participants();
 	}
 
 	/**
@@ -44,7 +46,8 @@ public class Server {
 				if (socket.isConnected()) {
 					System.out.println("Client connected on IP: " + socket.getInetAddress());
 					new Client(socket);
-					es.submit(new InputReader(socket));
+					participants.addParticipant(socket);
+					es.submit(new InputReader(socket, mailbox));
 				}
 			}
 
