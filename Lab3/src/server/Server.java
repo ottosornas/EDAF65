@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import client.Client;
+
 public class Server {
 
 	private int port;
@@ -41,6 +43,7 @@ public class Server {
 
 				if (socket.isConnected()) {
 					System.out.println("Client connected on IP: " + socket.getInetAddress());
+					new Client(socket);
 					es.submit(new InputReader(socket));
 				}
 			}
