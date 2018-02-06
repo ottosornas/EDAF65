@@ -15,7 +15,8 @@ public class Server {
 	private ExecutorService es;
 	private Mailbox mailbox;
 	private Participants participants;
-
+	private Monitor monitor;
+	
 	/**
 	 * Creates the server on the given port
 	 * 
@@ -38,16 +39,14 @@ public class Server {
 		try {
 			ServerSocket ss = new ServerSocket(port);
 			System.out.println("Server started on port: " + port);
-
 			while (connected) {
 
 				Socket socket = ss.accept();
 
 				if (socket.isConnected()) {
 					System.out.println("Client connected on IP: " + socket.getInetAddress());
-					new Client(socket);
 					participants.addParticipant(socket);
-					es.submit(new InputReader(socket, mailbox));
+					new WritingProxy(mailbox, socket, participants);
 				}
 			}
 

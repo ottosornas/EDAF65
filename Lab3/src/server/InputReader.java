@@ -35,7 +35,8 @@ public class InputReader extends Thread {
 			try {
 				StringBuilder sb = new StringBuilder();
 				int ch = inStream.read();
-				while(ch!=13) {
+				while((ch!='\n') && (ch != -1)) {
+					System.out.println("Ch: " + ch);
 					sb.append((char) ch);
 					ch = inStream.read();	
 				}
