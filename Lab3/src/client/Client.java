@@ -12,24 +12,25 @@ public class Client {
 	private InetAddress ip = null;
 	private static final int port = 30000;
 	private Socket socket;
-
+	private String username;
 	/**
-	 * Creates the client itself (den här är antagligen fel)
+	 * Creates the client itself
 	 * 
 	 * @param socket
 	 */
-	public Client(Socket socket) {
+	public Client(Socket socket, String username) {
 		this.socket = socket;
 		ip = socket.getInetAddress();
+		this.username = username;
 		
 		System.out.println("Socket port: " + socket.getPort());
 		
 		ClientReader thread1 = new ClientReader(socket);
 		thread1.start();
-		run();
+		write();
 	}
 
-	public void run() {
+	public void write() {
 		Scanner scan = new Scanner(System.in);
 		OutputStream os;
 		try {
@@ -37,16 +38,17 @@ public class Client {
 			while (true) {
 				try {
 					String msg = scan.nextLine();
-					os.write(msg.getBytes());
+					String ms2 = username + ":" + msg + "*";
+					os.write(ms2.getBytes());
 					if (msg.contains("Q:")) {
-						socket.close();
-						return;
+						break;
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
 			}
+			socket.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -63,7 +65,7 @@ public class Client {
 	}
 	
 	public static void main(String[] args){
-		if (args.length != 1) {
+		if (args.length != 2) {
 			System.out.println("Syntax: java Client <address>");
 			System.exit(1);
 		}
@@ -76,7 +78,7 @@ public class Client {
 			System.exit(1);
 		}
 		
-		Client client = new Client(socket);
-		client.run();
+		Client client = new Client(socket, args[1]);
+		client.write();
 	}
 }

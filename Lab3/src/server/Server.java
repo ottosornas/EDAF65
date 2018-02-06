@@ -12,22 +12,22 @@ public class Server {
 
 	private int port;
 	private boolean connected;
-	private ExecutorService es;
 	private Mailbox mailbox;
-	private Participants participants;
-	private Monitor monitor;
-	
+	private Fetcher fetcher;
+    private ExecutorService es;
+
 	/**
 	 * Creates the server on the given port
 	 * 
 	 * @param port
 	 */
 	public Server(int port) {
-		es = Executors.newFixedThreadPool(10);
 		this.port = port;
 		mailbox = new Mailbox();
-		participants = new Participants();
-	}
+		es = Executors.newFixedThreadPool(10);
+		fetcher = new Fetcher(mailbox);
+		fetcher.start();	
+}
 
 	/**
 	 * Starts the server
@@ -45,8 +45,8 @@ public class Server {
 
 				if (socket.isConnected()) {
 					System.out.println("Client connected on IP: " + socket.getInetAddress());
-					participants.addParticipant(socket);
-					new WritingProxy(mailbox, socket, participants);
+					InputReader thread1 = new InputReader(socket, mailbox);
+					thread1.start();
 				}
 			}
 

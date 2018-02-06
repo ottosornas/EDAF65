@@ -6,11 +6,9 @@ import java.net.Socket;
 
 public class WritingProxy extends Thread {
 
-	private String message;
+	private Message message;
 	private OutputStream os;
 	private Socket socket;
-	private Mailbox mailbox;
-	private Participants participants;
 
 	/**
 	 * This class send messages from the server to the clients
@@ -18,10 +16,9 @@ public class WritingProxy extends Thread {
 	 * @param message
 	 * @param socket
 	 */
-	public WritingProxy(Mailbox mailbox, Socket socket, Participants participants) {
+	public WritingProxy(Message message, Socket socket) {
 		this.socket = socket;
-		this.mailbox = mailbox;
-		this.participants = participants;
+		this.message = message;
 		try {
 			os = socket.getOutputStream();
 		} catch (IOException e) {
@@ -45,23 +42,24 @@ public class WritingProxy extends Thread {
 	 * @throws IOException
 	 */
 	public void sendMsg() throws InterruptedException, IOException {
-		Message msg = Mailbox.messages.remove(0);
-		System.out.println("Message type: " + msg.getType());
-		switch (msg.getType()) {
-		case 'E':
-			os.write(("IP: " + socket.getInetAddress() + " said " + message).getBytes());
-			break;
-		case 'Q':
-			participants.kick(msg.getIP());
-			break;
-		case 'M':
-			for (Socket socket : Participants.sockets) {
-				os.write(("IP: " + socket.getInetAddress() + " said " + message).getBytes());
+		System.out.println("Message type: " + message.getType());
+		switch (message.getType()) {
+		case "E":
+			if (socket.equals(Mailbox.clientList.get(message.getUsername()))) {
+				os.write(("You said: " + message.getMessage() + "*").getBytes());
 			}
+			break;
+		case "Q":
+			Mailbox.clientList.get(message.getUsername()).close();
+			Mailbox.clientList.remove(message.getUsername());
+			
+			break;
+		case "M":
+			os.write(("User: " + message.getUsername() + " broadcasts " + message.getMessage() + "*").getBytes());
 			break;
 		default:
 			System.out.println("in default");
-			os.write(("IP: " + socket.getInetAddress() + " said " + message).getBytes());
+			os.write(("IP: " + socket.getInetAddress() + " said " + message.getMessage() + "*").getBytes());
 			break;
 		}
 

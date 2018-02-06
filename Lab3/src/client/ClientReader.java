@@ -35,7 +35,7 @@ public class ClientReader extends Thread {
 
 		int c = is.read();
 		StringBuilder sb = new StringBuilder();
-		while ((c != -1) && (c != '\n')) {
+		while ((c != -1) && (c != 42)) {
 			sb.append((char) c);
 			c = is.read();
 		}
