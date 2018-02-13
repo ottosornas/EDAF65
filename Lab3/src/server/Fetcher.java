@@ -21,7 +21,7 @@ public class Fetcher extends Thread {
 				Message message = mailbox.fetchMsg();
 				if(message.getType()!=null){
 				for(String s : Mailbox.clientList.keySet()){
-					System.out.println("asdsa");
+					System.out.println(s);
 					WritingProxy thread1 = new WritingProxy(message, Mailbox.clientList.get(s));
 					thread1.start();
 				}

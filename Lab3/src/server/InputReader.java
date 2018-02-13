@@ -37,12 +37,9 @@ public class InputReader extends Thread {
 				Message msg;
 				int ch = inStream.read();
 				while ((ch != 42) && (ch != -1)) {
-					System.out.println("Ch: " + ch);
 					sb.append((char) ch);
 					ch = inStream.read();
 				}
-				//System.out.println("Message: " + sb.toString());
-
 				msg = new Message(socket.getInetAddress().toString(), sb.toString());
 				mailbox.newClient(msg.getUsername(), this.socket);
 				mailbox.addMsg(msg);
